@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  drivers-cache:
+    image: redis:alpine
+    command: redis-server
+    ports:
+      - "6379:6379"
+  api:
+    build: ./fast-pizza-api
+    ports:
+      - "3000:3000" 
+    depends_on: 
+      - drivers-cache
+  web:
+     build: ./fast_pizza
+     ports:
+      - "4040:4040" 
+
+networks: 
+  default: 
+    external: 
+      name: fast-network 
