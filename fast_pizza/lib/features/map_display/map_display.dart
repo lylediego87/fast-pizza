@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -20,7 +21,7 @@ class _MapsDisplayState extends State<MapsDisplay> {
   final LatLng _centralJakarta =
       const LatLng(-6.190661334599699, 106.82895257992107);
   final _channel = WebSocketChannel.connect(Uri.parse('ws://localhost:3000/'));
-  List<Marker> _markers = [];
+  Set<Marker> _markers = HashSet<Marker>();
 
   List<PointLatLng>? _polylines;
   double? _distance;
@@ -122,20 +123,22 @@ class _MapsDisplayState extends State<MapsDisplay> {
 
   void _addMarkers(LatLng userLocation, LatLng driverLocation) {
     setState(() {
-      _markers = [];
+      _markers.clear();
+    });
+    Set<Marker> markers = HashSet<Marker>();
+    markers.add(Marker(
+        markerId: const MarkerId('user'),
+        infoWindow: const InfoWindow(title: 'Your Position'),
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+        position: userLocation));
+    markers.add(Marker(
+        markerId: const MarkerId('driver'),
+        infoWindow: const InfoWindow(title: 'Nearest Driver Position'),
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
+        position: driverLocation));
 
-      _markers.add(Marker(
-          markerId: const MarkerId('user'),
-          infoWindow: const InfoWindow(title: 'Your Position'),
-          icon:
-              BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
-          position: userLocation));
-      _markers.add(Marker(
-          markerId: const MarkerId('driver'),
-          infoWindow: const InfoWindow(title: 'Nearest Driver Position'),
-          icon:
-              BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
-          position: driverLocation));
+    setState(() {
+      _markers = markers;
     });
   }
 

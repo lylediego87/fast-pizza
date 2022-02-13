@@ -36,4 +36,18 @@ const getNearestDriver = async (redisClient,userLocation) => {
     return nearestDriver;
   }
 
-module.exports = {calculateDistance, getNearestDriver};
+  const getClosestDrivers = async (redisClient,userLocation,size) => {
+    const drivers = await getDrivers(redisClient);
+    const nearestDriver = drivers.map(driver => {  
+      const distance = calculateDistance(userLocation.latitude, userLocation.longitude, driver.latitude, driver.longitude);            
+      return {
+        driverId: driver.driverId,
+        distance: distance,
+        latitude: driver.latitude,
+        longitude: driver.longitude
+      };
+    }).sort((a,b) => a.distance - b.distance).slice(0,size);           
+    return nearestDriver;
+  }
+
+module.exports = {calculateDistance, getNearestDriver, getClosestDrivers};

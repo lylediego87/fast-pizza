@@ -10,7 +10,19 @@ const readFromDb = async (onReceiveRecord) => {
   const db = client.db("fastpizzadb");
 
   const cursor = db.collection("drivers").find();
-  cursor.stream().on('data', onReceiveRecord);  
+  let record;
+  while((record = await cursor.next())){
+    await onReceiveRecord(record);  
+    sleep(200);
+  }
+}
+
+const sleep = (milliseconds) => {
+  const date = Date.now();
+  let currentDate = null;
+  do {
+    currentDate = Date.now();
+  } while (currentDate - date < milliseconds);
 }
 
 module.exports = readFromDb;

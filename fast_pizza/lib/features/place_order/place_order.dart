@@ -1,4 +1,5 @@
 import 'package:fast_pizza/features/map_display/map_display.dart';
+import 'package:fast_pizza/features/map_display_radius/map_display_radius.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_google_places_web/flutter_google_places_web.dart';
 
@@ -43,7 +44,7 @@ class _PlaceOrderState extends State<PlaceOrder> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => MapsDisplay(_placeName),
+                    builder: (context) => MapsDisplayRadius(_placeName),
                   ),
                 );
               },
